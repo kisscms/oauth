@@ -1,6 +1,6 @@
 <?php
 /*
- *	OAuth for KISSCMS (v.0.5)
+ *	OAuth for KISSCMS 
  *	Straightforward implementation of the OAuth protocol to connect to most opular APIs
  *	Homepage: http://kisscms.com/plugins
  *	Created by Makis Tracend (@tracend)
@@ -14,31 +14,21 @@ class OAuth extends Controller {
 		// add extra filtering if necessery...
 		
 		// point to the appropriate sub-routine based on the variables
-		if( !empty( $params['code'] ) )
-			$this->code( $params );
-		if( !empty( $params['oauth_token']) )
-			$this->save( $params );
+		if( !empty( $params['code'] ) ||  !empty( $params['oauth_token']) )
+			$this->access_token( $params );
 		
 		// redirect back to the homepage
 		header('Location: '. url() );
 	}
 	
-	// Get code method
-	private function code( $params ){
+	// Get the access token 
+	private function access_token( $params ){
 		$class = ucfirst($params["api"])."_OAuth";
 		$oauth = new $class();
-		$code = $params['code'];
-		$oauth->access_token( $code );
+		$oauth->access_token( $params );
 		
 	}
 	
-	// Request token with the HMAC-SHA1 signature
-	private function save( $params ){
-		$class = ucfirst($params["api"])."_OAuth";
-		$oauth = new $class();
-		$oauth->save( $params );
-		
-	}
 	
 }
 
