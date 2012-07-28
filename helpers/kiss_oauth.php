@@ -12,6 +12,7 @@ class KISS_OAuth_v2 {
 	public $refresh_token;
 		
 	function  __construct( $api=false, $url=false ) {
+		
 		// create the oauth array if this is the first run
 		if( !array_key_exists("oauth", $_SESSION) ) $_SESSION['oauth'] = array();
 		
@@ -20,7 +21,7 @@ class KISS_OAuth_v2 {
 			$this->redirect_uri = url("/oauth/api/". $api);
 			
 			// create the $api array if this is the first run
-			if( !array_key_exists("$api", $_SESSION) ) $_SESSION['oauth'][$api] = array();
+			if( !array_key_exists("$api", $_SESSION['oauth']) ) $_SESSION['oauth'][$api] = array();
 		
 			if( !empty($GLOBALS['config'][$api]['key']) ) $this->client_id = $GLOBALS['config'][$api]['key'];
 	 		if( !empty($GLOBALS['config'][$api]['secret']) ) $this->client_secret = $GLOBALS['config'][$api]['secret'];
@@ -30,12 +31,13 @@ class KISS_OAuth_v2 {
 	 		if( !empty($_SESSION['oauth'][$api]['refresh_token']) ) $this->refresh_token =  $_SESSION['oauth'][$api]['refresh_token'];
 			
 		}
+		
 	}
 	
 	
 	// Generating Links
 	// - Using GET
-	public static function link( $scope="", $params=NULL ){
+	public static function link( $scope="", $custom=NULL ){
 		$class = get_called_class();
 		$oauth = new $class();
 		
@@ -51,7 +53,10 @@ class KISS_OAuth_v2 {
 		);
 		
 		// check if we have additional parameters
-		if( !empty($params) ) $request['params'] = array_merge( $request['params'], $params );
+		if( !empty($custom) ){ 
+			if( array_key_exists("url", $custom) ) $request['url'] =  $custom['url'];
+			if( array_key_exists("params", $custom) ) $request['params'] = array_merge( $request['params'], $custom['params'] );
+		}
 		
 		$query = http_build_query( $request["params"] );
 		
@@ -86,22 +91,20 @@ class KISS_OAuth_v2 {
 		$http->setParams( $request["params"] );
 		
 		$http->execute( $request["url"] );
-		
 		// save the response
 		$this->save($http->result);
-		
-		// return true
 		
 	}
 
 	// - Refresh a token with a refresh_token
-	function refresh_token( $custom=array() ){
+	function refreshToken( $custom=array() ){
 					
 		$request = array( 
 			"url" => $this->url['refresh_token'], 
 			"params" => array( 
 					"client_id" => $this->client_id, 
 					"client_secret" => $this->client_secret,
+					"redirect_uri" => $this->redirect_uri, 
 					"refresh_token" => $this->refresh_token,
 			)
 		);
@@ -223,7 +226,7 @@ class KISS_OAuth_v1 {
 	}
 
 	// - Refresh a token with a refresh_token
-	function refresh_token( $custom=array() ){
+	function refreshToken( $custom=array() ){
 					
 		$request = array( 
 			"url" => $this->url['refresh_token'], 
