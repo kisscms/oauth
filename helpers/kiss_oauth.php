@@ -20,7 +20,8 @@ class KISS_OAuth_v2 {
 		
 		// get the attributes of a specific API
 		if( $api ){ 
-			$this->redirect_uri = url("/oauth/api/". $api);
+			// set redirect uri only if necessary
+			if( empty($this->redirect_uri) ) $this->redirect_uri = url("/oauth/api/". $api);
 			
 			// create the $api array if this is the first run
 			if( !array_key_exists("$api", $_SESSION['oauth']) ) $_SESSION['oauth'][$api] = array();
@@ -146,7 +147,7 @@ class KISS_OAuth_v2 {
 		
 		// 500 seconds is a random number... should it be configurable?
 		if( $expires_in < 500 ){
-			//$this->refreshToken();
+			$this->refreshToken();
 		}
 		
 		// all good...
@@ -158,7 +159,7 @@ class KISS_OAuth_v2 {
 	function creds( $data=NULL ){
 		
 		// restore credentials externally (from db?)
-		if( !empty($data) && empty($_SESSION['oauth'][$this->api]) ) $_SESSION['oauth'][$this->api] = $data;
+		if( !empty($data) && empty($_SESSION['oauth'][$this->api]) ) $_SESSION['oauth'][$this->api] = (array) $data;
 		
 		// check if the token is valid
 		$this->checkToken();
