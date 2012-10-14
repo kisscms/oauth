@@ -1,6 +1,6 @@
 <?php 
 
-class KISS_OAuth_v2 {
+class KISS_OAuth_v2 extends KISS_OAuth{
 	
 	public $url;
 	public $redirect_uri;
@@ -10,8 +10,6 @@ class KISS_OAuth_v2 {
 	
 	public $token;
 	public $refresh_token;
-	
-	public $api;
 	
 	function  __construct( $api=false, $url=false ) {
 		
@@ -131,61 +129,10 @@ class KISS_OAuth_v2 {
 		
 	}
 	
-	
-	function checkToken(){
-		
-		// check if theres's an expiry date
-		$expiry = ( empty($_SESSION['oauth'][$this->api]['expiry']) ) ? false : $_SESSION['oauth'][$this->api]['expiry'];
-		
-		// reset the authentication
-		if( !$expiry || !$this->refresh_token) {
-			// something is seriously wrong - reinstate authentication
-			return false;
-		}
-		
-		$expires_in = strtotime("now") - strtotime( $expiry ); // seconds
-		
-		// 500 seconds is a random number... should it be configurable?
-		if( $expires_in < 500 ){
-			$this->refreshToken();
-		}
-		
-		// all good...
-		return true;
-	
-	}
-	
-	
-	function creds( $data=NULL ){
-		
-		// restore credentials externally (from db?)
-		if( !empty($data) && empty($_SESSION['oauth'][$this->api]) ) $_SESSION['oauth'][$this->api] = (array) $data;
-		
-		// check if the token is valid
-		$this->checkToken();
-		
-		// return the details from the session
-		return ( empty($_SESSION['oauth'][$this->api]) ) ? false : $_SESSION['oauth'][$this->api];
-		
-	}
-	
-	
-	function save( $response ){
-		// do something with the response...
-	}
-	
-	
-	// Helper functions
-	function urlencode_oauth($str) {
-	  return
-		str_replace('+',' ',str_replace('%7E','~',rawurlencode($str)));
-	}
-	
-	
 }
 
 
-class KISS_OAuth_v1 {
+class KISS_OAuth_v1 extends KISS_OAuth {
 	
 	public $url;
 	public $redirect_uri;
@@ -223,6 +170,8 @@ class KISS_OAuth_v1 {
 			} else {
 			  $this->token = NULL;
 			}
+			
+			$this->api = $api;
 		}
 	}
 	
@@ -325,6 +274,50 @@ class KISS_OAuth_v1 {
 	}
 	
 	
+}
+
+
+class KISS_OAuth {
+	
+	public $api;
+	
+	function checkToken(){
+		
+		// check if theres's an expiry date
+		$expiry = ( empty($_SESSION['oauth'][$this->api]['expiry']) ) ? false : $_SESSION['oauth'][$this->api]['expiry'];
+		
+		// reset the authentication
+		if( !$expiry || !$this->refresh_token) {
+			// something is seriously wrong - reinstate authentication
+			return false;
+		}
+		
+		$expires_in = strtotime("now") - strtotime( $expiry ); // seconds
+		
+		// 500 seconds is a random number... should it be configurable?
+		if( $expires_in < 500 ){
+			$this->refreshToken();
+		}
+		
+		// all good...
+		return true;
+	
+	}
+	
+	function creds( $data=NULL ){
+		
+		// restore credentials externally (from db?)
+		if( !empty($data) && empty($_SESSION['oauth'][$this->api]) ) $_SESSION['oauth'][$this->api] = (array) $data;
+		
+		// check if the token is valid
+		$this->checkToken();
+		
+		// return the details from the session
+		return ( empty($_SESSION['oauth'][$this->api]) ) ? false : $_SESSION['oauth'][$this->api];
+		
+	}
+	
+	
 	function save( $response ){
 		// do something with the response...
 	}
@@ -335,7 +328,7 @@ class KISS_OAuth_v1 {
 	  return
 		str_replace('+',' ',str_replace('%7E','~',rawurlencode($str)));
 	}
-
+	
 	
 }
 
