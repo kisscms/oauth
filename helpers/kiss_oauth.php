@@ -154,7 +154,7 @@ class KISS_OAuth_v1 extends KISS_OAuth {
 			$this->redirect_uri = url("/oauth/api/". $api);
 			
 			// create the $api array if this is the first run
-			if( !array_key_exists("$api", $_SESSION) ) $_SESSION['oauth'][$api] = array();
+			if( !array_key_exists("$api", $_SESSION['oauth']) ) $_SESSION['oauth'][$api] = array();
 		
 			if( !empty($GLOBALS['config'][$api]['key']) ) $this->client_id = $GLOBALS['config'][$api]['key'];
 	 		if( !empty($GLOBALS['config'][$api]['secret']) ) $this->client_secret = $GLOBALS['config'][$api]['secret'];
