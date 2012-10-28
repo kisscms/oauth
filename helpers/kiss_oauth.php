@@ -168,7 +168,7 @@ class KISS_OAuth_v1 extends KISS_OAuth {
 			$this->signature = new $OAuthSignatureMethod();
 			
 			$this->consumer = new OAuthConsumer($this->client_id, $this->client_secret);
-			if (!empty($oauth_token) && !empty($oauth_token_secret)) {
+			if (!empty($oauth_token) && !empty($oauth_token_secret)  && strtolower($sign) != "plaintext") {
 			  $this->token = new OAuthConsumer($oauth_token, $oauth_token_secret);
 			} else {
 			  $this->token = NULL;
