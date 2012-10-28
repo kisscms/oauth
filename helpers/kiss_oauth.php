@@ -143,9 +143,9 @@ class KISS_OAuth_v1 extends KISS_OAuth {
 	private $token;
 	
 	private $consumer;
-	private $sha1_method;
+	private $signature;
 	
-	function  __construct( $api=false, $url=false ) {
+	function  __construct( $api=false, $url=false, $sign="HMAC_SHA1" ) {
 		// create the oauth array if this is the first run
 		if( !array_key_exists("oauth", $_SESSION) ) $_SESSION['oauth'] = array();
 		
@@ -163,7 +163,10 @@ class KISS_OAuth_v1 extends KISS_OAuth {
 			if( !empty($_SESSION['oauth'][$api]['oauth_token']) ) $oauth_token = $_SESSION['oauth'][$api]['oauth_token'];
 	 		if( !empty($_SESSION['oauth'][$api]['oauth_token_secret']) ) $oauth_token_secret =  $_SESSION['oauth'][$api]['oauth_token_secret'];
 		
-			$this->sha1_method = new OAuthSignatureMethod_HMAC_SHA1();
+			// OAUth Signature
+			$OAuthSignatureMethod = "OAuthSignatureMethod_". strtoupper($sign);
+			$this->signature = new $OAuthSignatureMethod();
+			
 			$this->consumer = new OAuthConsumer($this->client_id, $this->client_secret);
 			if (!empty($oauth_token) && !empty($oauth_token_secret)) {
 			  $this->token = new OAuthConsumer($oauth_token, $oauth_token_secret);
@@ -264,7 +267,7 @@ class KISS_OAuth_v1 extends KISS_OAuth {
 	function request( $url="", $method="GET", $params=NULL){
 		
 		$request = OAuthRequest::from_consumer_and_token($this->consumer, $this->token, $method, $url, $params);
-		$request->sign_request($this->sha1_method, $this->consumer, $this->token);
+		$request->sign_request($this->signature, $this->consumer, $this->token);
 		
 		$http = new Http();
 		$http->setMethod($method);
