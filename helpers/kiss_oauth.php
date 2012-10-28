@@ -168,7 +168,7 @@ class KISS_OAuth_v1 extends KISS_OAuth {
 			$this->signature = new $OAuthSignatureMethod();
 			
 			$this->consumer = new OAuthConsumer($this->client_id, $this->client_secret);
-			if (!empty($oauth_token) && !empty($oauth_token_secret)  && strtolower($sign) != "plaintext") {
+			if (!empty($oauth_token) && !empty($oauth_token_secret)) {
 			  $this->token = new OAuthConsumer($oauth_token, $oauth_token_secret);
 			} else {
 			  $this->token = NULL;
@@ -266,8 +266,11 @@ class KISS_OAuth_v1 extends KISS_OAuth {
 	// compile the request for OAuth v1
 	function request( $url="", $method="GET", $params=NULL){
 		
-		$request = OAuthRequest::from_consumer_and_token($this->consumer, $this->token, $method, $url, $params);
-		$request->sign_request($this->signature, $this->consumer, $this->token);
+		//#4 FIX: Don't use token on PLAINTEXT signature
+		$token = ($this->signature instanceof OAuthSignatureMethod_PLAINTEXT) ? NULL : $this->token;
+		
+		$request = OAuthRequest::from_consumer_and_token($this->consumer, $token, $method, $url, $params);
+		$request->sign_request($this->signature, $this->consumer, $token);
 		
 		$http = new Http();
 		$http->setMethod($method);
