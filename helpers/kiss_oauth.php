@@ -184,6 +184,10 @@ class KISS_OAuth_v1 extends KISS_OAuth {
 		$class = get_called_class();
 		$oauth = new $class();
 		
+		//Add callback if defined in the constructor
+		if( !empty($oauth->url['oauth_callback']) && empty($params['oauth_callback']) )
+			$params['oauth_callback'] = $oauth->url['oauth_callback'];
+		
 		$request = $oauth->request( $oauth->url['request_token'], "GET", $params);
 		
 		parse_str($request, $response);
