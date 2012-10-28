@@ -192,10 +192,18 @@ class KISS_OAuth_v1 extends KISS_OAuth {
 		
 		parse_str($request, $response);
 		
-		// save the token/secret for later
-		$oauth->save($response);
+		// check if we have an error...
+		if( !empty( $response['oauth_token'] ) ){ 
+				
+			// save the token/secret for later
+			$oauth->save($response);
+			
+    		echo $oauth->url['authorize'] . "?oauth_token=" . $response['oauth_token'];
+			
+		} else {
+			return;
+		}
 		
-    	echo $oauth->url['authorize'] . "?oauth_token=" . $response['oauth_token'];
 	}
 	
 	
