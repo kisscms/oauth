@@ -215,7 +215,10 @@ class KISS_OAuth_v1 extends KISS_OAuth {
 	
 	// - Access a token given a code (GET method)
 	function access_token( $params, $custom=array() ){
-			
+		
+		 // if we don't have the right credentials don't even try to make the requestt
+        if( empty($params['oauth_token']) || empty($params['oauth_verifier']) ) return;
+
 		$query = array( 
 			"url" => $this->url['access_token'], 
 			"params" => array( 
@@ -228,8 +231,15 @@ class KISS_OAuth_v1 extends KISS_OAuth {
 		
 		parse_str($request, $response);
 		
-		// save the response
-		$this->save($response);
+		// check if we have an error...
+		if( !empty( $response['oauth_token'] ) ){
+		
+			// save the response
+			$this->save($response);
+		
+		} else {
+				return;
+		}
 		
 	}
 
