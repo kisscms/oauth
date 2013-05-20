@@ -17,8 +17,8 @@ class OAuth extends Controller {
 		if( !empty( $params['code'] ) ||  !empty( $params['oauth_token']) )
 			$this->access_token( $params );
 		
-		// redirect back to the homepage
-		header('Location: '. url() );
+		$this->finish($params["api"]);
+
 	}
 	
 	// Get the access token 
@@ -28,7 +28,24 @@ class OAuth extends Controller {
 		$oauth->access_token( $params );
 		
 	}
+
+	// #6 - supporting client side authentication
+	private function finish( $api ){
+		// to lower case...
+		$api = strtolower( $api );
 	
+		if( !array_key_exists("client_auth", $GLOBALS["config"][ $api ] ) || !$GLOBALS["config"]['foursquare']["client_auth"] ){
+		// if( !empty($_SESSION['oauth']['foursquare']['access_token']) && ($_SERVER['REQUEST_URI'] ==  WEB_FOLDER) ){
+			// redirect back to the homepage
+		   header('Location: '. url() );
+	
+		} else {
+			// assume there's going to be a controller to handle 'access_token'
+			header("Location: ". url("access_token#". $_SESSION['oauth']['foursquare']['access_token']) );
+			exit;
+		}
+	}
+
 	
 }
 
