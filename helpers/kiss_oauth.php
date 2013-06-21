@@ -147,8 +147,8 @@ class KISS_OAuth_v1 extends KISS_OAuth {
 	
 	function  __construct( $api=false, $url=false, $sign="HMAC_SHA1" ) {
 		// create the oauth array if this is the first run
-		if( !array_key_exists("oauth", $_SESSION) ) $_SESSION['oauth'] = array();
-		
+		if( empty($_SESSION['oauth']) ) $_SESSION['oauth'] = array();
+				
 		// get the attributes of a specific API
 		if( $api ){ 
 			$this->redirect_uri = url("/oauth/api/". $api);
