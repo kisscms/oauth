@@ -301,17 +301,6 @@ class KISS_OAuth_v1 extends KISS_OAuth {
 		return ($http->error) ? die($http->error) : $http->result;
 	}
 
-	// generate token
-	function getToken(){
-		$token = ($this->signature instanceof OAuthSignatureMethod_PLAINTEXT) ? NULL : $this->token;
-
-		$request = OAuthRequest::from_consumer_and_token($this->consumer, $token, $method, $url, $params);
-		$request->sign_request($this->signature, $this->consumer, $token);
-
-		parse_str($request->to_postdata(), $params);
-		
-		return $params;
-	}
 
 }
 
