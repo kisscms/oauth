@@ -301,6 +301,10 @@ class KISS_OAuth_v1 extends KISS_OAuth {
 		return ($http->error) ? die($http->error) : $http->result;
 	}
 
+	// generate token
+	function getToken(){
+		return $this->token;
+	}
 
 }
 
