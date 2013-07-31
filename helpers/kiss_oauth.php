@@ -315,9 +315,10 @@ class KISS_OAuth {
 		$expiry = ( empty($_SESSION['oauth'][$this->api]['expiry']) ) ? false : $_SESSION['oauth'][$this->api]['expiry'];
 
 		// reset the authentication
-		if( !$expiry || !$this->refresh_token) {
+		//if( !$expiry || !$this->refresh_token) {
+		if( !$expiry ) {
 			// something is seriously wrong - reinstate authentication
-			//unset( $_SESSION['oauth'][$this->api]["access_token"] );
+			unset( $_SESSION['oauth'][$this->api]["access_token"] );
 			return false;
 		}
 
