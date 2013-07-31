@@ -322,7 +322,7 @@ class KISS_OAuth {
 			return false;
 		}
 
-		$expires_in = strtotime("now") - strtotime( $expiry ); // seconds
+		$expires_in = strtotime( $expiry ) - strtotime("now"); // seconds
 
 		// 500 seconds is a random number... should it be configurable?
 		if( $expires_in < 500 ){
