@@ -25,11 +25,11 @@ class KISS_OAuth_v2 extends KISS_OAuth{
 			if( !array_key_exists("$api", $_SESSION['oauth']) ) $_SESSION['oauth'][$api] = array();
 
 			if( !empty($GLOBALS['config'][$api]['key']) ) $this->client_id = $GLOBALS['config'][$api]['key'];
-	 		if( !empty($GLOBALS['config'][$api]['secret']) ) $this->client_secret = $GLOBALS['config'][$api]['secret'];
+			if( !empty($GLOBALS['config'][$api]['secret']) ) $this->client_secret = $GLOBALS['config'][$api]['secret'];
 
 			// OAuth v2 tokens
 			if( !empty($_SESSION['oauth'][$api]['access_token']) ) $this->token = $_SESSION['oauth'][$api]['access_token'];
-	 		if( !empty($_SESSION['oauth'][$api]['refresh_token']) ) $this->refresh_token =  $_SESSION['oauth'][$api]['refresh_token'];
+			if( !empty($_SESSION['oauth'][$api]['refresh_token']) ) $this->refresh_token =  $_SESSION['oauth'][$api]['refresh_token'];
 
 			// save for reference
 			$this->api = $api;
@@ -157,11 +157,11 @@ class KISS_OAuth_v1 extends KISS_OAuth {
 			if( !array_key_exists("$api", $_SESSION['oauth']) ) $_SESSION['oauth'][$api] = array();
 
 			if( !empty($GLOBALS['config'][$api]['key']) ) $this->client_id = $GLOBALS['config'][$api]['key'];
-	 		if( !empty($GLOBALS['config'][$api]['secret']) ) $this->client_secret = $GLOBALS['config'][$api]['secret'];
+			if( !empty($GLOBALS['config'][$api]['secret']) ) $this->client_secret = $GLOBALS['config'][$api]['secret'];
 
 			// OAuth v1 tokens
 			if( !empty($_SESSION['oauth'][$api]['oauth_token']) ) $oauth_token = $_SESSION['oauth'][$api]['oauth_token'];
-	 		if( !empty($_SESSION['oauth'][$api]['oauth_token_secret']) ) $oauth_token_secret =  $_SESSION['oauth'][$api]['oauth_token_secret'];
+			if( !empty($_SESSION['oauth'][$api]['oauth_token_secret']) ) $oauth_token_secret =  $_SESSION['oauth'][$api]['oauth_token_secret'];
 
 			// OAUth Signature
 			$OAuthSignatureMethod = "OAuthSignatureMethod_". strtoupper($sign);
@@ -201,7 +201,7 @@ class KISS_OAuth_v1 extends KISS_OAuth {
 			// save the token/secret for later
 			$oauth->save($response);
 
-    		echo $oauth->url['authorize'] . "?oauth_token=" . $response['oauth_token'];
+			echo $oauth->url['authorize'] . "?oauth_token=" . $response['oauth_token'];
 
 		} else {
 			return;
@@ -217,7 +217,7 @@ class KISS_OAuth_v1 extends KISS_OAuth {
 	function access_token( $params, $custom=array() ){
 
 		 // if we don't have the right credentials don't even try to make the requestt
-        if( empty($params['oauth_token']) || empty($params['oauth_verifier']) ) return;
+		if( empty($params['oauth_token']) || empty($params['oauth_verifier']) ) return;
 
 		$query = array(
 			"url" => $this->url['access_token'],
@@ -317,6 +317,7 @@ class KISS_OAuth {
 		// reset the authentication
 		if( !$expiry || !$this->refresh_token) {
 			// something is seriously wrong - reinstate authentication
+			//unset( $_SESSION['oauth'][$this->api]["access_token"] );
 			return false;
 		}
 
