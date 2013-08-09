@@ -43,7 +43,7 @@ class KISS_OAuth_v2 extends KISS_OAuth{
 
 	// Generating Links
 	// - Using GET
-	public static function link( $scope=NULL, $custom=NULL, $output=true ){
+	public static function link( $options=NULL, $output=true ){
 		$class = get_called_class();
 		$oauth = new $class();
 
@@ -52,16 +52,16 @@ class KISS_OAuth_v2 extends KISS_OAuth{
 			"url" => $oauth->url['authorize'],
 			"params" => array(
 					"client_id" => $oauth->client_id,
-					"scope" => ( ( !is_null($scope) ) ? $scope : $oauth->scope ),
+					"scope" => $oauth->scope,
 					"redirect_uri" => $oauth->redirect_uri,
 					"response_type" => "code"
 			)
 		);
 
 		// check if we have additional parameters
-		if( !empty($custom) ){
-			if( array_key_exists("url", $custom) ) $request['url'] =  $custom['url'];
-			if( array_key_exists("params", $custom) ) $request['params'] = array_merge( $request['params'], $custom['params'] );
+		if( !empty($options) ){
+			if( array_key_exists("url", $options) ) $request['url'] =  $options['url'];
+			if( array_key_exists("params", $options) ) $request['params'] = array_merge( $request['params'], $options['params'] );
 		}
 
 		$query = http_build_query( $request["params"] );
