@@ -7,6 +7,7 @@ class KISS_OAuth_v2 extends KISS_OAuth{
 
 	public $client_id;
 	public $client_secret;
+	public $scope;
 
 	public $token;
 	public $refresh_token;
@@ -26,6 +27,7 @@ class KISS_OAuth_v2 extends KISS_OAuth{
 
 			if( !empty($GLOBALS['config'][$api]['key']) ) $this->client_id = $GLOBALS['config'][$api]['key'];
 			if( !empty($GLOBALS['config'][$api]['secret']) ) $this->client_secret = $GLOBALS['config'][$api]['secret'];
+			if( !empty($GLOBALS['config'][$api]['scope']) ) $this->scope = $GLOBALS['config'][$api]['scope'];
 
 			// OAuth v2 tokens
 			if( !empty($_SESSION['oauth'][$api]['access_token']) ) $this->token = $_SESSION['oauth'][$api]['access_token'];
@@ -41,7 +43,7 @@ class KISS_OAuth_v2 extends KISS_OAuth{
 
 	// Generating Links
 	// - Using GET
-	public static function link( $scope='', $custom=NULL, $output=true ){
+	public static function link( $scope=NULL, $custom=NULL, $output=true ){
 		$class = get_called_class();
 		$oauth = new $class();
 
@@ -50,7 +52,7 @@ class KISS_OAuth_v2 extends KISS_OAuth{
 			"url" => $oauth->url['authorize'],
 			"params" => array(
 					"client_id" => $oauth->client_id,
-					"scope" => $scope,
+					"scope" => ( ( !is_null($scope) ) ? $scope : $oauth->scope ),
 					"redirect_uri" => $oauth->redirect_uri,
 					"response_type" => "code"
 			)
