@@ -41,7 +41,7 @@ class KISS_OAuth_v2 extends KISS_OAuth{
 
 	// Generating Links
 	// - Using GET
-	public static function link( $scope='', $custom=NULL ){
+	public static function link( $scope='', $custom=NULL, $output=true ){
 		$class = get_called_class();
 		$oauth = new $class();
 
@@ -64,8 +64,11 @@ class KISS_OAuth_v2 extends KISS_OAuth{
 
 		$query = http_build_query( $request["params"] );
 
-		echo $request['url'] ."?". $query;
-
+		if( $output ){
+			echo $request['url'] ."?". $query;
+		} else {
+			return $request['url'] ."?". $query;
+		}
 	}
 
 
