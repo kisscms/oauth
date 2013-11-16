@@ -52,7 +52,7 @@ class KISS_OAuth_v2 extends KISS_OAuth{
 			"url" => $oauth->url['authorize'],
 			"params" => array(
 					"client_id" => $oauth->client_id,
-					"scope" => $oauth->scope,
+					"scope" => ( array_key_exists("scope", $options) ) ? $options['scope'] : $oauth->scope,
 					"redirect_uri" => $oauth->redirect_uri,
 					"response_type" => "code"
 			)
