@@ -43,9 +43,11 @@ class KISS_OAuth_v2 extends KISS_OAuth{
 
 	// Generating Links
 	// - Using GET
-	public static function link( $options=NULL, $output=true ){
+	public static function link( $options=array(), $output=true ){
 		$class = get_called_class();
 		$oauth = new $class();
+		// FIX: support only scope to be passed as an option
+		if( is_scalar($options) ) $options = array( "scope" => $options );
 
 		// create the request
 		$request = array(
